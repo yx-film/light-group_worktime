@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>燈光組跳班計算</title>
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #051f0c;
+    color: white;
+    padding: 20px;
+}
+
+.card {
+    background: #1c1c1e;
+    padding: 20px;
+    max-width: 420px;
+    margin: auto;
+    border: 1px solid #333;
+}
+
+h2 { text-align: center; }
+
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    border: none;
+    background: #000;
+    color: white;
+}
+
+button {
+    background: #6b0606;
+    color: white;
+    border: none;
+}
+
+.row {
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>跳班時間表</h2>
+
+    <label>上班時間</label>
+    <input type="time" id="start">
+
+    <button onclick="calc()">產生班表</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function formatTime(date, base) {
+    let h = String(date.getHours()).padStart(2, '0');
+    let m = String(date.getMinutes()).padStart(2, '0');
+
+    let dayDiff = date.getDate() - base.getDate();
+    let dayText = dayDiff > 0 ? `（+${dayDiff}天）` : "";
+
+    return `${h}:${m}${dayText}`;
+}
+
+function calc() {
+    let start = document.getElementById("start").value;
+    let result = document.getElementById("result");
+
+    if (!start) {
+        result.innerHTML = "請輸入時間";
+        return;
+    }
+
+    let base = new Date("2000-01-01 " + start);
+    let html = "";
+
+    let shifts = 1;
+    let hours = 8;
+
+    // 先加第一班
+    let d = new Date(base);
+    d.setHours(d.getHours() + 8);
+
+    html += `<div class="row">${formatTime(d, base)} — 1班</div>`;
+
+    // 8~20（每3小時半班）
+    while (hours < 20) {
+        hours += 3;
+        shifts += 0.5;
+
+        let d = new Date(base);
+        d.setHours(d.getHours() + hours);
+
+        let text = shifts % 1 === 0 ? `${shifts}班` : `${Math.floor(shifts)}班半`;
+
+        html += `<div class="row">${formatTime(d, base)} — ${text}</div>`;
+    }
+
+    // >20（每2小時半班）
+    while (shifts < 8) { // 你可以改上限
+        hours += 2;
+        shifts += 0.5;
+
+        let d = new Date(base);
+        d.setHours(d.getHours() + hours);
+
+        let text = shifts % 1 === 0 ? `${shifts}班` : `${Math.floor(shifts)}班半`;
+
+        html += `<div class="row">${formatTime(d, base)} — ${text}</div>`;
+    }
+
+    result.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
