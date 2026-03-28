@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>燈光組跳班計算</title>
+<title>跳班計算</title>
 
 <style>
 body {
@@ -49,12 +49,12 @@ button {
 <body>
 
 <div class="card">
-    <h2>跳班時間表</h2>
+    <h2>跳班計算</h2>
 
-    <label>上班時間</label>
+    <label>出班時間</label>
     <input type="time" id="start">
 
-    <button onclick="calc()">產生班表</button>
+    <button onclick="calc()">班數計算</button>
 
     <div id="result"></div>
 </div>
@@ -75,7 +75,7 @@ function calc() {
     let result = document.getElementById("result");
 
     if (!start) {
-        result.innerHTML = "請輸入時間";
+        result.innerHTML = "請輸入出班時間";
         return;
     }
 
